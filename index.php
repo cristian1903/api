@@ -8,20 +8,44 @@
                 case 'domicilios':
                     $respuesta=plantilla::mdlMostrarDomiciliosPendiente();
                     echo json_encode($respuesta);
+                    http_response_code(200);
                 break;
                 case 'domicilios/'.$numero:
                     $respuesta=plantilla::mdlMostrarDomiciliosPendienteById($numero);
                     echo json_encode($respuesta);
+                    http_response_code(200);
+                break;
+                case 'misdomicilios/'.$numero:
+                    $respuesta=plantilla::mdlMostrarMisDomicilios($numero);
+                    echo json_encode($respuesta);
+                    http_response_code(200);
                 break;
                
                 default:
                     # code...
-                    break;
+                break;
             }
-            http_response_code(200);
-        }else if($_SERVER["REQUEST_METHOD"]=="POST"){
-            
-            http_response_code(200);
+        }else if($_SERVER["REQUEST_METHOD"]=="PUT"){
+            $ruta=$_GET["url"];
+            $numero=intval(preg_replace('/[^0-9]+/','',$ruta),10);
+            $postBody=file_get_contents('php://input');
+            $convert=json_decode($postBody,true);
+            if(json_last_error()==0){
+                switch ($ruta) {
+                    case 'domicilios':
+                        $respuesta=plantilla::mdlMostrarEscogerDomicilio($convert);
+                        echo json_encode($respuesta);
+                        http_response_code(200);
+                    break;
+                   
+                    default:
+                        # code...
+                    break;
+                }
+            }else{
+                http_response_code(400);
+            }
+     
         }else{
           http_response_code(405);  
         }
